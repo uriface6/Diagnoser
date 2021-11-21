@@ -15,8 +15,10 @@ public:
 	Node(string data, Node* positive_child = nullptr, Node* negative_child = nullptr);
 	~Node();
 
+	Node* positive_child;
+	Node* negative_child;
+	string data;
+
 private:
-	Node* _positive_child;
-	Node* _negative_child;
-	string _data;
+
 };

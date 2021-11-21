@@ -1,9 +1,8 @@
 #include "Record.h"
 
-Record::Record(string illness, string symptoms)
+Record::Record(string illness, vector<string> symptoms)
+	: illness (illness), symptoms (symptoms)
 {
-	_illness = illness;
-	_symptoms = symptoms;
 }
 
 Record::~Record()

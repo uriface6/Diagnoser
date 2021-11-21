@@ -26,16 +26,6 @@ int main()
 {
     system("color B");
 
-	/*string a = "    asas    sas ass dfdgfg     hgh f    ";
-	trim(a);
-	cout << a << "." << endl;
-	vector<string> b;
-	SplitString(a, b);
-	PrintVector(b);
-	cout << "zzzzzzzzzzz" << endl;*/
-
-
-
 	/* Manually build a simple tree.
 		            cough
 		        Yes / \ No
@@ -44,11 +34,11 @@ int main()
 		influenza   cold
 	*/
 
-	Node flu_leaf = Node("influenza", nullptr, nullptr);
-	Node cold_leaf = Node("cold", nullptr, nullptr);
-	Node inner_vertex = Node("fever", &flu_leaf, &cold_leaf);
-	Node healthy_leaf = Node("healthy", nullptr, nullptr);
-	Node root = Node("cough", &inner_vertex, &healthy_leaf);
+	Node flu_leaf("influenza", nullptr, nullptr);
+	Node cold_leaf("cold", nullptr, nullptr);
+	Node inner_vertex("fever", &flu_leaf, &cold_leaf);
+	Node healthy_leaf("healthy", nullptr, nullptr);
+	Node root("cough", &inner_vertex, &healthy_leaf);
 
 	Diagnoser diagnoser = Diagnoser(&root);
 
@@ -69,6 +59,9 @@ int main()
 }
 
 
+
+
+
 vector<Record> parseData(string filepath)
 {
 	/*
@@ -83,13 +76,17 @@ vector<Record> parseData(string filepath)
 	vector<Record> records;
 	vector<string> words;
 	string myText;
+	string illness;
 	ifstream MyReadFile(filepath);
 
 	while (getline(MyReadFile, myText)) {
 		
 		trim(myText);
 		SplitString(myText, words);
-		records.push_back(Record(words[0], words[1]));
+		
+		string illness = words.front();
+		words.erase(words.begin());
+		records.push_back(Record(illness, words));
 	}
 
 	MyReadFile.close();

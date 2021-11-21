@@ -14,11 +14,12 @@ class Record
 	children, if its leaf the child is empty
 	*/
 public:
-	Record(string illness, string symptoms);
+	Record(string illness, vector<string> symptoms);
 	~Record();
 
-private:
-	string _illness;
-	string _symptoms;
+	string illness;
+	vector<string> symptoms;
 	
+private:
+
 };
