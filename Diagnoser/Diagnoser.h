@@ -5,6 +5,7 @@
 #include <string_view>
 #include <vector>
 #include <map>
+#include <algorithm>    // std::sort
 #include "Node.h"
 #include "Record.h"
 
@@ -21,15 +22,35 @@ public:
 	~Diagnoser();
 
 	string diagnose(vector<string> symptoms);
-	string diagnoseRecursive(Node* currNode, vector<string> symptoms);
 	float calculate_success_rate(vector<Record*> records);
 	vector<string> allIllnesses();
-	void allIllnessesRecursive(Node* currNode, map<string, int>* illnessesMap);
-	void paths_to_illness(string illness);
+	vector<vector<bool>> pathsToIllness(string illness);
 
 
 private:
 	Node* _root;
+	
+	string diagnoseRecursive(Node* currNode, vector<string> symptoms);
+	void allIllnessesRecursive(Node* currNode, map<string, int>* illnessesMap);
+	void pathsToIllnessRecursive(Node* currNode, string illness, vector<bool>* routeList);
+	void printMap(map<string, int> m);
+	vector<string> sortMapToVector(map<string, int> m);
+	
+
+
+	/*struct comp {
+		template <typename T>
+
+		// Comparator function
+		bool operator()(const T& l,
+			const T& r) const
+		{
+			if (l.second != r.second) {
+				return l.second < r.second;
+			}
+			return l.first < r.first;
+		}
+	};*/
 
 	/*bool cmp(pair<string, int>& a,
 		pair<string, int>& b);

@@ -62,14 +62,15 @@ float Diagnoser::calculate_success_rate(vector<Record*> records)
 			sucssesDiagnose++;
 		}
 	}
-	return sucssesDiagnose / records.size();
+	return (float)(sucssesDiagnose / records.size());
 }
 
 vector<string> Diagnoser::allIllnesses()
 {
 	map<string, int> illnessesMap;
-	vector<string> Sortillnesses;
-
+	allIllnessesRecursive(_root, &illnessesMap);
+	printMap(illnessesMap);
+	vector<string> Sortillnesses = sortMapToVector(illnessesMap);
 	return Sortillnesses;
 
 }
@@ -90,9 +91,33 @@ void Diagnoser::allIllnessesRecursive(Node* currNode, map<string, int>* illnesse
 }
 
 
-void Diagnoser::paths_to_illness(string illness)
+vector<vector<bool>> Diagnoser::pathsToIllness(string illness)
 {
+	vector<vector<bool>> b;
+	return b;
+}
 
+void Diagnoser::pathsToIllnessRecursive(Node* currNode, string illness, vector<bool>* routeList)
+{
+	if (currNode->negative_child && currNode->positive_child)
+	{
+		/*if (find(symptoms.begin(), symptoms.end(), currNode->data) != symptoms.end())
+		{
+			//symptom in symptoms
+			return diagnoseRecursive(currNode->positive_child, symptoms);
+		}
+		else
+		{
+			return diagnoseRecursive(currNode->negative_child, symptoms);
+		}*/
+	}
+	else
+	{
+		if (currNode->data != illness)
+		{
+			routeList->clear();
+		}
+	}
 }
 
 /*
@@ -129,11 +154,58 @@ void Diagnoser::sort(map<string, int>& M)
 	}
 }
 
-void print_map(string_view comment, const std::map<std::string, int>& m)
+*/
+
+void Diagnoser::printMap(map<string, int> m)
 {
-	std::cout << comment;
-	for (const auto& [key, value] : m) {
-		std::cout << key << " = " << value << "; ";
+	map<string, int>::iterator it;
+	for (it = m.begin(); it != m.end(); it++)
+	{
+		cout << it->first << " : " << it->second << endl;
 	}
 	std::cout << "\n";
+}
+
+/*
+bool Diagnoser::cmp(pair<string, int>& a, pair<string, int>& b)
+{
+	return a.second < b.second;
 }*/
+
+vector<string> Diagnoser::sortMapToVector(map<string, int> m)
+{
+	//To-Do 
+	vector<string> v;
+	/*map<string, int>::iterator it;
+	for (it = m.begin(); it != m.end(); it++)
+	{
+		v.push_back(it->first);
+	}
+
+	// Declare vector of pairs
+	vector<pair<string, int>> A;
+
+	// Copy key-value pair from Map
+	// to vector of pairs
+	//vector<pair<string, int>>::iterator it;
+	for (it = m.begin(); it != m.end(); it++) {
+		A.push_back(*it);
+	}
+	
+	// Sort using comparator function
+	sort(A.begin(), A.end(), comp);
+
+	// Print the sorted value
+	for (auto& it : A) {
+
+		cout << it.first << ' '
+			<< it.second << endl;
+
+		cout << "aaaaa" << endl;
+		for (unsigned int i = 0; i < v.size(); ++i)
+			cout << v[i] << endl;
+		cout << "aaaaa" << endl;
+		return v;
+	}*/
+	return v;
+}

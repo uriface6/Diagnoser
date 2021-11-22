@@ -9,10 +9,11 @@
 
 
 vector<Record> parseData(string filepath);
-void build_tree(vector<string> records, string symptoms);
-void optimal_tree(vector<string> records, string symptoms, int depth);
+Node* buildTree(vector<Record> records, vector<string> symptoms);
+void buildTreeRecursive(Node* currNode, vector<string> symptoms, int index, vector<bool> route);
+void optimalTree(vector<string> records, string symptoms, int depth);
 void SplitString(string s, vector<string>& v);
-void PrintVector(vector<string> v);
+void printVector(vector<string> v);
 
 // trim from start 
 inline void ltrim(std::string& s);
@@ -55,6 +56,21 @@ int main()
 		cout << "Test failed. Should have printed cold, printed: " << diagnosis << endl;
 	}
 	//TO-DO Add more tests for sections 2 - 7 here.
+	vector<string> s = diagnoser.allIllnesses();
+	printVector(s);
+
+	vector<Record> a;
+	myVector.push_back("abc");
+	myVector.push_back("ddd");
+	myVector.push_back("eee");
+	//myVector.push_back("fff");
+	printVector(myVector);
+
+	cout << "________________________" << endl;
+	
+	buildTree(a, myVector);
+
+	system("PAUSE");
 
 }
 
@@ -94,12 +110,44 @@ vector<Record> parseData(string filepath)
 	return records;
 }
 
-void build_tree(vector<string> records, string symptoms)
+Node* buildTree(vector<Record> records, vector<string> symptoms)
 {
+	vector<string>::iterator firstSymptom = symptoms.begin();
+	Node* root = new Node(*firstSymptom);
+	firstSymptom++;
+	buildTreeRecursive(root, firstSymptom, symptoms.end());
 
+	//TO-DO 
+	//check
+	Diagnoser myDiagnoser = Diagnoser(root);
+	myDiagnoser.allIllnesses();
+	return root;
 }
 
-void optimal_tree(vector<string> records, string symptoms, int depth)
+void buildTreeRecursive(Node* currNode, vector<string>::symptoms, int index, vector<bool> route)
+{
+	
+	if (currSymptom != lastSymptom)
+	{
+		cout << "curSymptom: " << *currSymptom << endl;
+		currNode->data = *currSymptom;
+		currNode->negative_child = new Node(*currSymptom);
+		currNode->positive_child = new Node(*currSymptom);
+		vector<string>::iterator temp = currSymptom;
+		vector<bool> negetiveRoute = route;
+		negetiveRoute.push_back(false);
+		buildTreeRecursive(currNode->negative_child, ++currSymptom, lastSymptom, negetiveRoute);
+		vector<bool> positiveRoute = route;
+		positiveRoute.push_back(true);
+		buildTreeRecursive(currNode->positive_child, ++temp, lastSymptom, positiveRoute);
+	}
+	else
+	{
+
+	}
+}
+
+void optimalTree(vector<string> records, string symptoms, int depth)
 {
 
 }
@@ -108,7 +156,7 @@ void SplitString(string s, vector<string>& v) {
 
 	//To-Do add check in start and end;
 	string temp = "";
-	for (int i = 0; i < s.length(); ++i) {
+	for (unsigned int i = 0; i < s.length(); ++i) {
 
 		if (s[i] == ' ') {
 			v.push_back(temp);
@@ -123,8 +171,8 @@ void SplitString(string s, vector<string>& v) {
 
 }
 
-void PrintVector(vector<string> v) {
-	for (int i = 0; i < v.size(); ++i)
+void printVector(vector<string> v) {
+	for (unsigned int i = 0; i < v.size(); ++i)
 		cout << v[i] << endl;
 	cout << "\n";
 }

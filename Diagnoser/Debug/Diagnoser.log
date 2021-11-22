@@ -1,11 +1,3 @@
-﻿  Diagnoser.cpp
+﻿  main.cpp
   The contents of <string_view> are available only with C++17 or later.
-C:\Users\מחשב1\Documents\uri\Diagnoser\Diagnoser\Diagnoser.cpp(65,25): warning C4244: 'return': conversion from 'unsigned int' to 'float', possible loss of data
-  main.cpp
-  The contents of <string_view> are available only with C++17 or later.
-C:\Users\מחשב1\Documents\uri\Diagnoser\Diagnoser\main.cpp(111,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\מחשב1\Documents\uri\Diagnoser\Diagnoser\main.cpp(127,20): warning C4018: '<': signed/unsigned mismatch
-  Node.cpp
-  Record.cpp
-  Generating Code...
   Diagnoser.vcxproj -> C:\Users\מחשב1\Documents\uri\Diagnoser\Diagnoser\Debug\Diagnoser.exe
