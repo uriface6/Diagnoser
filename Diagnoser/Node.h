@@ -12,11 +12,11 @@ class Node
 	children, if its leaf the child is empty
 	*/
 public:
-	Node(string data, Node* positive_child = nullptr, Node* negative_child = nullptr);
+	Node(string data, Node* positiveChild = nullptr, Node* negativeChild = nullptr);
 	~Node();
 
-	Node* positive_child;
-	Node* negative_child;
+	Node* positiveChild;
+	Node* negativeChild;
 	string data;
 
 private:

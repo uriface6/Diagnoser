@@ -26,14 +26,14 @@ public:
 	vector<string> allIllnesses();
 	vector<vector<bool>> pathsToIllness(string illness);
 
+	static void printMap(map<string, int> m);
 
 private:
 	Node* _root;
 	
 	string diagnoseRecursive(Node* currNode, vector<string> symptoms);
 	void allIllnessesRecursive(Node* currNode, map<string, int>* illnessesMap);
-	void pathsToIllnessRecursive(Node* currNode, string illness, vector<bool>* routeList);
-	void printMap(map<string, int> m);
+	void pathsToIllnessRecursive(Node* currNode, string illness, vector<bool> routeList, vector<vector<bool>>* listOfRouteLists);
 	vector<string> sortMapToVector(map<string, int> m);
 	
 

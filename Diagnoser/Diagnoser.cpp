@@ -12,36 +12,21 @@ Diagnoser::~Diagnoser()
 
 string Diagnoser::diagnose(vector<string> symptoms)
 {
-	/*Node* currNode = _root;
-	while (currNode->negative_child && currNode->positive_child)
-	{
-		if (find(symptoms.begin(), symptoms.end(), currNode->data) != symptoms.end())
-		{
-			//symptom in symptoms
-			currNode = currNode->positive_child;
-		}
-		else
-		{
-			currNode = currNode->negative_child;
-		}
-	}
-	return currNode->data;*/
-
 	return diagnoseRecursive(_root, symptoms);
 }
 
 string Diagnoser::diagnoseRecursive(Node* currNode, vector<string> symptoms)
 {
-	if (currNode->negative_child && currNode->positive_child)
+	if (currNode->negativeChild && currNode->positiveChild)
 	{
 		if (find(symptoms.begin(), symptoms.end(), currNode->data) != symptoms.end())
 		{
 			//symptom in symptoms
-			return diagnoseRecursive(currNode->positive_child, symptoms);
+			return diagnoseRecursive(currNode->positiveChild, symptoms);
 		}
 		else
 		{
-			return diagnoseRecursive(currNode->negative_child, symptoms);
+			return diagnoseRecursive(currNode->negativeChild, symptoms);
 		}
 	}
 	else
@@ -77,10 +62,10 @@ vector<string> Diagnoser::allIllnesses()
 
 void Diagnoser::allIllnessesRecursive(Node* currNode, map<string, int>* illnessesMap)
 {
-	if (currNode->negative_child && currNode->positive_child)
+	if (currNode->negativeChild && currNode->positiveChild)
 	{
-		allIllnessesRecursive(currNode->positive_child, illnessesMap);
-		allIllnessesRecursive(currNode->negative_child, illnessesMap);
+		allIllnessesRecursive(currNode->positiveChild, illnessesMap);
+		allIllnessesRecursive(currNode->negativeChild, illnessesMap);
 	}
 	else
 	{
@@ -93,29 +78,29 @@ void Diagnoser::allIllnessesRecursive(Node* currNode, map<string, int>* illnesse
 
 vector<vector<bool>> Diagnoser::pathsToIllness(string illness)
 {
-	vector<vector<bool>> b;
-	return b;
+	vector<vector<bool>> listOfRouteLists;
+	vector<bool> routeList;
+	pathsToIllnessRecursive(_root, illness, routeList, &listOfRouteLists);
+	return listOfRouteLists;
 }
 
-void Diagnoser::pathsToIllnessRecursive(Node* currNode, string illness, vector<bool>* routeList)
+void Diagnoser::pathsToIllnessRecursive(Node* currNode, string illness, vector<bool> routeList, vector<vector<bool>>* listOfRouteLists)
 {
-	if (currNode->negative_child && currNode->positive_child)
+	if (currNode->negativeChild && currNode->positiveChild)
 	{
-		/*if (find(symptoms.begin(), symptoms.end(), currNode->data) != symptoms.end())
-		{
-			//symptom in symptoms
-			return diagnoseRecursive(currNode->positive_child, symptoms);
-		}
-		else
-		{
-			return diagnoseRecursive(currNode->negative_child, symptoms);
-		}*/
+		vector<bool> negetiveRoute = routeList;
+		negetiveRoute.push_back(false);
+		vector<bool> positiveRoute = routeList;
+		positiveRoute.push_back(true);
+		
+		pathsToIllnessRecursive(currNode->negativeChild, illness, negetiveRoute, listOfRouteLists);
+		pathsToIllnessRecursive(currNode->positiveChild, illness, positiveRoute, listOfRouteLists);
 	}
 	else
 	{
-		if (currNode->data != illness)
+		if (currNode->data == illness)
 		{
-			routeList->clear();
+			listOfRouteLists->push_back(routeList);
 		}
 	}
 }

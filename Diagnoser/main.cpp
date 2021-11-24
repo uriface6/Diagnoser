@@ -10,10 +10,14 @@
 
 vector<Record> parseData(string filepath);
 Node* buildTree(vector<Record> records, vector<string> symptoms);
-void buildTreeRecursive(Node* currNode, vector<string> symptoms, int index, vector<bool> route);
+void buildTreeRecursive(Node* currNode, vector<string> symptoms, int index, vector<bool> route, vector<Record> records);
+string findIllnes(vector<string> symptoms, vector<bool> route, vector<Record> records);
 void optimalTree(vector<string> records, string symptoms, int depth);
 void SplitString(string s, vector<string>& v);
+
 void printVector(vector<string> v);
+void printVector(vector<bool> v);
+void printVector(vector<vector<bool>> v);
 
 // trim from start 
 inline void ltrim(std::string& s);
@@ -35,11 +39,11 @@ int main()
 		influenza   cold
 	*/
 
-	Node flu_leaf("influenza", nullptr, nullptr);
-	Node cold_leaf("cold", nullptr, nullptr);
-	Node inner_vertex("fever", &flu_leaf, &cold_leaf);
-	Node healthy_leaf("healthy", nullptr, nullptr);
-	Node root("cough", &inner_vertex, &healthy_leaf);
+	Node fluLeaf("influenza", nullptr, nullptr);
+	Node coldLeaf("cold", nullptr, nullptr);
+	Node innerVertex("fever", &fluLeaf, &coldLeaf);
+	Node healthyLeaf("healthy", nullptr, nullptr);
+	Node root("cough", &innerVertex, &healthyLeaf);
 
 	Diagnoser diagnoser = Diagnoser(&root);
 
@@ -58,20 +62,22 @@ int main()
 	//TO-DO Add more tests for sections 2 - 7 here.
 	vector<string> s = diagnoser.allIllnesses();
 	printVector(s);
+	vector<vector<bool>> listOfRouteLists = diagnoser.pathsToIllness("cold");
+	printVector(listOfRouteLists);
 
 	vector<Record> a;
+	
 	myVector.push_back("abc");
 	myVector.push_back("ddd");
 	myVector.push_back("eee");
 	//myVector.push_back("fff");
 	printVector(myVector);
-
+	a.push_back(Record("hahahahahah", myVector));
 	cout << "________________________" << endl;
 	
 	buildTree(a, myVector);
 
 	system("PAUSE");
-
 }
 
 
@@ -112,39 +118,104 @@ vector<Record> parseData(string filepath)
 
 Node* buildTree(vector<Record> records, vector<string> symptoms)
 {
-	vector<string>::iterator firstSymptom = symptoms.begin();
-	Node* root = new Node(*firstSymptom);
-	firstSymptom++;
-	buildTreeRecursive(root, firstSymptom, symptoms.end());
-
-	//TO-DO 
-	//check
-	Diagnoser myDiagnoser = Diagnoser(root);
-	myDiagnoser.allIllnesses();
-	return root;
-}
-
-void buildTreeRecursive(Node* currNode, vector<string>::symptoms, int index, vector<bool> route)
-{
-	
-	if (currSymptom != lastSymptom)
+	Node* root;
+	if (symptoms.size() == 0)
 	{
-		cout << "curSymptom: " << *currSymptom << endl;
-		currNode->data = *currSymptom;
-		currNode->negative_child = new Node(*currSymptom);
-		currNode->positive_child = new Node(*currSymptom);
-		vector<string>::iterator temp = currSymptom;
-		vector<bool> negetiveRoute = route;
-		negetiveRoute.push_back(false);
-		buildTreeRecursive(currNode->negative_child, ++currSymptom, lastSymptom, negetiveRoute);
-		vector<bool> positiveRoute = route;
-		positiveRoute.push_back(true);
-		buildTreeRecursive(currNode->positive_child, ++temp, lastSymptom, positiveRoute);
+		root = new Node("None");
 	}
 	else
 	{
-
+		root = new Node(symptoms[0]);
+		vector<bool> route;
+		buildTreeRecursive(root, symptoms, 1, route, records);
 	}
+	//TO-DO delete
+	//check
+	Diagnoser myDiagnoser = Diagnoser(root);
+	myDiagnoser.allIllnesses();
+	
+	
+	return root;
+}
+
+void buildTreeRecursive(Node* currNode, vector<string> symptoms, int index, vector<bool> route, vector<Record> records)
+{
+	vector<bool> negetiveRoute = route;
+	negetiveRoute.push_back(false);
+	vector<bool> positiveRoute = route;
+	positiveRoute.push_back(true);
+
+	if (index != symptoms.size())
+	{
+		cout << "curSymptom: " << symptoms[index] << endl;
+		//currNode->data = *currSymptom;
+		currNode->negativeChild = new Node(symptoms[index]);
+		currNode->positiveChild = new Node(symptoms[index]);
+		//vector<string>::iterator temp = currSymptom;
+		index++;
+		buildTreeRecursive(currNode->negativeChild, symptoms, index, negetiveRoute, records);
+		buildTreeRecursive(currNode->positiveChild, symptoms, index, positiveRoute, records);
+	}
+	else
+	{
+		/*cout << "Your route is: " << endl;
+		printVector(route);
+		cout << "___________________________" << endl;*/
+		
+		//cout << "find illnes negetive : " << findIllnes(symptoms, negetiveRoute, records) << endl;
+		currNode->negativeChild = new Node(findIllnes(symptoms, negetiveRoute, records));
+		//cout << "find illnes positive: " << findIllnes(symptoms, positiveRoute, records) << endl;
+		currNode->positiveChild = new Node(findIllnes(symptoms, positiveRoute, records));
+	}
+}
+
+string findIllnes(vector<string> symptoms, vector<bool> route, vector<Record> records)
+{
+	vector<bool>::iterator currRoute;
+	map<string, int> illnesses;
+	bool flag = true;
+	for (vector<Record>::iterator currRecord = records.begin(); currRecord != records.end(); currRecord++)
+	{
+		currRoute = route.begin();
+		flag = true;
+		for (vector<string>::iterator cuurSymptom = symptoms.begin(); cuurSymptom != symptoms.end(); cuurSymptom++)
+		{
+			vector<string>::iterator isFound;
+			
+			isFound = find(currRecord->symptoms.begin(), currRecord->symptoms.end(), *cuurSymptom);
+			if (*currRoute && isFound == currRecord->symptoms.end() ||
+				!(*currRoute) && isFound != currRecord->symptoms.end())
+			{
+				flag = false;
+				break;
+			}
+			currRoute++;
+		}
+		if (flag)
+		{
+			illnesses[currRecord->illness] = illnesses[currRecord->illness] + 1;
+		}
+	}
+	//Diagnoser::printMap(illness);
+	string bestDiagnoseIllness;
+	int bestDiagnoseCount = 0;
+	if (illnesses.size() > 0)
+	{
+		for (map<string, int>::iterator currIllness = illnesses.begin(); currIllness != illnesses.end(); currIllness++)
+		{
+			if (currIllness->second > bestDiagnoseCount)
+			{
+				bestDiagnoseCount = currIllness->second;
+				bestDiagnoseIllness = currIllness->first;
+			}
+		}
+	}
+	else
+	{
+		bestDiagnoseIllness = "None";
+	}
+	//cout << "bestDiagnoseIllness = " << bestDiagnoseIllness << endl;
+	return bestDiagnoseIllness;
 }
 
 void optimalTree(vector<string> records, string symptoms, int depth)
@@ -176,6 +247,32 @@ void printVector(vector<string> v) {
 		cout << v[i] << endl;
 	cout << "\n";
 }
+
+void printVector(vector<bool> v) {
+	for (unsigned int i = 0; i < v.size(); ++i)
+		cout << v[i] << endl;
+	cout << "\n";
+}
+
+void printVector(vector<vector<bool>> v) {
+	for (unsigned int i = 0; i < v.size(); ++i)
+	{
+		for (unsigned int j = 0; j < v[i].size(); ++j)
+		{
+			if (v[i][j])
+			{
+				cout << "True, ";
+			}
+			else
+			{
+				cout << "False, ";
+			}
+		}
+		cout << endl;
+	}
+	cout << "\n";
+}
+
 
 
 
